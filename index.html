@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deletar Produtos por SKU</title>
+    <link rel="stylesheet" type="text/css" href="skuu.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="logocss.css" media="screen" />
+</head>
+<body>
+
+    <body>
+        <nav>
+            <div class="logo">
+                <img src="logo.png" alt="Logo"> <!-- Substitua 'sua-imagem.png' pelo caminho da sua imagem -->
+            </div>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="menu">
+                <a href="file:///C:/Users/Matheus%20Pinheiro/Desktop/ud/index.html">Home</a>
+                <a href="file:///C:/Users/Matheus%20Pinheiro/Desktop/ud/ENTRADA/index.html">Entrada</a>
+                <a href="file:///C:/Users/Matheus%20Pinheiro/Desktop/ud/SAIDA/index.html">Saída</a>
+                <a href="file:///C:/Users/Matheus%20Pinheiro/Desktop/ud/LISTAGEM/index.html">Listagem</a>
+                <a href="file:///C:/Users/Matheus%20Pinheiro/Desktop/ud/MAPEAMENTO/index.html">Mapeamento</a>
+            </div>
+        </nav>
+    
+        <script>
+            function toggleMenu() {
+                const menu = document.querySelector('nav .menu');
+                menu.classList.toggle('active');
+            }
+        </script>
+    </body>
+
+
+
+
+<br><br>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.querySelector('nav .menu');
+            menu.classList.toggle('active');
+        }
+    </script>
+
+    <div class="filter-container">
+        <label for="skuInput">Digite o SKU para adicionar à lista de exclusão: </label>
+        <input type="text" id="skuInput" placeholder="Digite o SKU" />
+        <button onclick="adicionarProdutoParaExcluir()">Adicionar à Lista</button>
+    </div>
+
+    <h2>Produtos a Serem Excluídos</h2>
+
+    <!-- Exibe a quantidade de produtos na lista -->
+    <p id="quantidadeExcluidos">Quantidade de produtos na lista: 0</p>
+
+    <table id="tabelaProdutosExclusao">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Produto</th>
+                <th>Cor</th>
+                <th>Espessura</th>
+                <th>Peso</th>
+                <th>SKU</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody id="produtosExclusao">
+            <!-- Produtos a serem excluídos serão listados aqui -->
+        </tbody>
+    </table>
+
+    <button id="btnExcluirTodos" style="display: none;" onclick="excluirProdutosSelecionados()">Excluir Produtos Selecionados</button>
+
+    <script>
+        // Carregar lista de exclusão do localStorage ou iniciar uma lista vazia
+        let produtosAExcluir = JSON.parse(localStorage.getItem('produtosAExcluir')) || [];
+
+        // Função para adicionar o produto à lista de exclusão
+        function adicionarProdutoParaExcluir() {
+            const skuInput = document.getElementById('skuInput').value;
+            const produtos = JSON.parse(localStorage.getItem('produtos')) || [];
+            const produto = produtos.find(p => p.sku === skuInput);
+
+            if (produto) {
+                if (!produtosAExcluir.some(p => p.sku === produto.sku)) { // Verifica se o produto já está na lista
+                    produtosAExcluir.push(produto); // Adiciona o produto à lista de exclusão
+                    localStorage.setItem('produtosAExcluir', JSON.stringify(produtosAExcluir)); // Atualiza o localStorage
+                    atualizarListaExclusao(); // Atualiza a lista de exclusão exibida
+                    document.getElementById('skuInput').value = ''; // Limpa o campo de SKU
+                } else {
+                    alert("Este produto já está na lista de exclusão.");
+                }
+            } else {
+                alert('Produto não encontrado para o SKU fornecido.');
+            }
+        }
+
+        // Função para atualizar a lista de exclusão exibida em tabela
+        function atualizarListaExclusao() {
+            const produtosExclusaoDiv = document.getElementById('produtosExclusao');
+            produtosExclusaoDiv.innerHTML = ''; // Limpa a tabela antes de atualizar
+
+            if (produtosAExcluir.length > 0) {
+                produtosAExcluir.forEach(produto => {
+                    const linha = document.createElement('tr');
+                    linha.innerHTML = `
+                        <td>${produto.codigo}</td>
+                        <td>${produto.produto}</td>
+                        <td>${produto.cor}</td>
+                        <td>${produto.espessura}</td>
+                        <td>${produto.peso}</td>
+                        <td>${produto.sku}</td>
+                        <td><button onclick="removerProdutoDeExclusao('${produto.sku}')">Remover</button></td>
+                    `;
+                    produtosExclusaoDiv.appendChild(linha);
+                });
+                document.getElementById('btnExcluirTodos').style.display = 'inline-block'; // Exibe o botão de excluir todos
+            } else {
+                document.getElementById('btnExcluirTodos').style.display = 'none'; // Esconde o botão de excluir se não houver produtos
+            }
+
+            // Atualiza a quantidade de produtos listados
+            document.getElementById('quantidadeExcluidos').innerText = `Quantidade de produtos na lista: ${produtosAExcluir.length}`;
+        }
+
+        // Função para remover um produto da lista de exclusão
+        function removerProdutoDeExclusao(sku) {
+            produtosAExcluir = produtosAExcluir.filter(produto => produto.sku !== sku); // Remove o produto da lista
+            localStorage.setItem('produtosAExcluir', JSON.stringify(produtosAExcluir)); // Atualiza o localStorage
+            atualizarListaExclusao(); // Atualiza a tabela exibida
+        }
+
+        // Função para excluir todos os produtos selecionados da lista
+        function excluirProdutosSelecionados() {
+            const confirmacao = confirm('Tem certeza que deseja excluir todos os produtos selecionados?');
+            if (confirmacao) {
+                let produtos = JSON.parse(localStorage.getItem('produtos')) || [];
+                produtosAExcluir.forEach(produto => {
+                    // Remove o produto do localStorage
+                    produtos = produtos.filter(p => p.sku !== produto.sku);
+                });
+
+                localStorage.setItem('produtos', JSON.stringify(produtos)); // Atualiza o localStorage
+                alert('Produtos excluídos com sucesso!');
+                produtosAExcluir = []; // Limpa a lista de produtos a excluir
+                localStorage.setItem('produtosAExcluir', JSON.stringify(produtosAExcluir)); // Atualiza o localStorage
+                atualizarListaExclusao(); // Atualiza a tabela exibida
+            }
+        }
+
+        // Carregar a lista de exclusão ao carregar a página
+        atualizarListaExclusao();
+    </script>
+
+</body>
+</html>
