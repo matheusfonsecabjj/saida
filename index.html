@@ -3,147 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saída de Produtos</title>
-    <link rel="stylesheet" type="text/css" href="styles.css" media="screen" />
-    <script>
-        const apiUrl = "http://localhost:3000"; // Alterar para o URL do backend em produção
-        let produtoAtual = null;
+    <title>Deletar Produtos por SKU</title>
+    <link rel="stylesheet" type="text/css" href="skuu.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="logocss.css" media="screen" />
+     <script>
+        // Verificar se o usuário está logado
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
 
-        // Função para buscar produto pelo SKU
-        async function buscarProduto() {
-            const skuInput = document.getElementById("skuInput").value;
-
-            if (!skuInput) {
-                alert("Por favor, insira um SKU.");
-                return;
-            }
-
-            try {
-                const response = await fetch(`${apiUrl}/produtos/${skuInput}`);
-                if (!response.ok) {
-                    throw new Error("Produto não encontrado!");
-                }
-
-                produtoAtual = await response.json();
-                atualizarDetalhesProduto(produtoAtual);
-            } catch (error) {
-                alert("Erro ao buscar o produto: " + error.message);
-            }
-        }
-
-        // Atualiza os detalhes do produto na tela
-        function atualizarDetalhesProduto(produto) {
-            const detalhesDiv = document.getElementById("detalhesProduto");
-            detalhesDiv.innerHTML = `
-                <p><strong>Código:</strong> ${produto.codigo}</p>
-                <p><strong>Nome:</strong> ${produto.produto}</p>
-                <p><strong>Cor:</strong> ${produto.cor}</p>
-                <p><strong>Espessura:</strong> ${produto.espessura}</p>
-                <p><strong>Peso:</strong> ${produto.peso}</p>
-                <p><strong>SKU:</strong> ${produto.sku}</p>
-            `;
-
-            document.getElementById("formCorredorVaga").style.display = "block";
-            document.getElementById("btnExcluir").style.display = "inline-block";
-        }
-
-        // Função para excluir produto pelo SKU
-        async function excluirProduto() {
-            if (!produtoAtual || !produtoAtual.sku) {
-                alert("Nenhum produto selecionado para exclusão.");
-                return;
-            }
-
-            const confirmacao = confirm("Tem certeza que deseja excluir este produto?");
-            if (!confirmacao) return;
-
-            try {
-                const response = await fetch(`${apiUrl}/produtos/${produtoAtual.sku}`, {
-                    method: "DELETE",
-                });
-
-                if (!response.ok) {
-                    throw new Error("Erro ao excluir o produto!");
-                }
-
-                alert("Produto excluído com sucesso!");
-                limparTela();
-            } catch (error) {
-                alert("Erro ao excluir o produto: " + error.message);
-            }
-        }
-
-        // Função para fixar corredor e vaga e adicionar ao relatório
-        async function salvarCorredorVaga() {
-            const corredor = document.getElementById("corredorInput").value;
-            const vaga = document.getElementById("vagaInput").value;
-
-            if (!produtoAtual) {
-                alert("Nenhum produto selecionado.");
-                return;
-            }
-
-            if (!corredor || !vaga) {
-                alert("Por favor, preencha corredor e vaga.");
-                return;
-            }
-
-            try {
-                const produtoAtualizado = {
-                    ...produtoAtual,
-                    corredor,
-                    vaga,
-                };
-
-                const response = await fetch(`${apiUrl}/produtos/${produtoAtual.sku}`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(produtoAtualizado),
-                });
-
-                if (!response.ok) {
-                    throw new Error("Erro ao salvar corredor e vaga!");
-                }
-
-                alert("Corredor e vaga fixados com sucesso!");
-                limparTela();
-            } catch (error) {
-                alert("Erro ao salvar corredor e vaga: " + error.message);
-            }
-        }
-
-        // Função para limpar a tela após uma operação
-        function limparTela() {
-            produtoAtual = null;
-            document.getElementById("skuInput").value = "";
-            document.getElementById("detalhesProduto").innerHTML = "";
-            document.getElementById("formCorredorVaga").style.display = "none";
-            document.getElementById("btnExcluir").style.display = "none";
+        // Se não estiver logado, redireciona para a página de login
+        if (!isLoggedIn) {
+            window.location.href = "https://matheusfonsecabjj.github.io/login/"; // Redireciona para o login
         }
     </script>
 </head>
 <body>
-    <h1>Saída de Produtos</h1>
-    <div>
-        <label for="skuInput">Digite o SKU:</label>
+
+    <body>
+        <nav>
+            <div class="logo">
+                <img src="logo.png" alt="Logo"> <!-- Substitua 'sua-imagem.png' pelo caminho da sua imagem -->
+            </div>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="menu">
+                <a href="https://matheusfonsecabjj.github.io/home/">Home</a>
+            <a href="https://matheusfonsecabjj.github.io/entrada/">Entrada</a>
+            <a href="https://matheusfonsecabjj.github.io/saida/">Saída</a>
+            <a href="https://matheusfonsecabjj.github.io/lista/">Listagem</a>
+            <a href="https://matheusfonsecabjj.github.io/mapa/">Mapeamento</a>
+            </div>
+        </nav>
+    
+        <script>
+            function toggleMenu() {
+                const menu = document.querySelector('nav .menu');
+                menu.classList.toggle('active');
+            }
+        </script>
+    </body>
+
+
+
+
+<br><br>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.querySelector('nav .menu');
+            menu.classList.toggle('active');
+        }
+    </script>
+
+    <div class="filter-container">
+        <label for="skuInput">Digite o SKU para adicionar à lista de exclusão: </label>
         <input type="text" id="skuInput" placeholder="Digite o SKU" />
-        <button onclick="buscarProduto()">Buscar Produto</button>
+        <button onclick="adicionarProdutoParaExcluir()">Adicionar à Lista</button>
     </div>
 
-    <div id="detalhesProduto" style="margin-top: 20px;"></div>
+    <h2>Produtos a Serem Excluídos</h2>
 
-    <form id="formCorredorVaga" style="display: none; margin-top: 20px;" onsubmit="event.preventDefault(); salvarCorredorVaga();">
-        <label for="corredorInput">Corredor:</label>
-        <input type="text" id="corredorInput" placeholder="Digite o corredor" required />
+    <!-- Exibe a quantidade de produtos na lista -->
+    <p id="quantidadeExcluidos">Quantidade de produtos na lista: 0</p>
 
-        <label for="vagaInput">Vaga:</label>
-        <input type="text" id="vagaInput" placeholder="Digite a vaga" required />
+    <table id="tabelaProdutosExclusao">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Produto</th>
+                <th>Cor</th>
+                <th>Espessura</th>
+                <th>Peso</th>
+                <th>SKU</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody id="produtosExclusao">
+            <!-- Produtos a serem excluídos serão listados aqui -->
+        </tbody>
+    </table>
 
-        <button type="submit">Fixar Corredor e Vaga</button>
-    </form>
+    <button id="btnExcluirTodos" style="display: none;" onclick="excluirProdutosSelecionados()">Excluir Produtos Selecionados</button>
 
-    <button id="btnExcluir" style="display: none; margin-top: 10px;" onclick="excluirProduto()">Excluir Produto</button>
+    <script>
+        // Carregar lista de exclusão do localStorage ou iniciar uma lista vazia
+        let produtosAExcluir = JSON.parse(localStorage.getItem('produtosAExcluir')) || [];
+
+        // Função para adicionar o produto à lista de exclusão
+        function adicionarProdutoParaExcluir() {
+            const skuInput = document.getElementById('skuInput').value;
+            const produtos = JSON.parse(localStorage.getItem('produtos')) || [];
+            const produto = produtos.find(p => p.sku === skuInput);
+
+            if (produto) {
+                if (!produtosAExcluir.some(p => p.sku === produto.sku)) { // Verifica se o produto já está na lista
+                    produtosAExcluir.push(produto); // Adiciona o produto à lista de exclusão
+                    localStorage.setItem('produtosAExcluir', JSON.stringify(produtosAExcluir)); // Atualiza o localStorage
+                    atualizarListaExclusao(); // Atualiza a lista de exclusão exibida
+                    document.getElementById('skuInput').value = ''; // Limpa o campo de SKU
+                } else {
+                    alert("Este produto já está na lista de exclusão.");
+                }
+            } else {
+                alert('Produto não encontrado para o SKU fornecido.');
+            }
+        }
+
+        // Função para atualizar a lista de exclusão exibida em tabela
+        function atualizarListaExclusao() {
+            const produtosExclusaoDiv = document.getElementById('produtosExclusao');
+            produtosExclusaoDiv.innerHTML = ''; // Limpa a tabela antes de atualizar
+
+            if (produtosAExcluir.length > 0) {
+                produtosAExcluir.forEach(produto => {
+                    const linha = document.createElement('tr');
+                    linha.innerHTML = `
+                        <td>${produto.codigo}</td>
+                        <td>${produto.produto}</td>
+                        <td>${produto.cor}</td>
+                        <td>${produto.espessura}</td>
+                        <td>${produto.peso}</td>
+                        <td>${produto.sku}</td>
+                        <td><button onclick="removerProdutoDeExclusao('${produto.sku}')">Remover</button></td>
+                    `;
+                    produtosExclusaoDiv.appendChild(linha);
+                });
+                document.getElementById('btnExcluirTodos').style.display = 'inline-block'; // Exibe o botão de excluir todos
+            } else {
+                document.getElementById('btnExcluirTodos').style.display = 'none'; // Esconde o botão de excluir se não houver produtos
+            }
+
+            // Atualiza a quantidade de produtos listados
+            document.getElementById('quantidadeExcluidos').innerText = `Quantidade de produtos na lista: ${produtosAExcluir.length}`;
+        }
+
+        // Função para remover um produto da lista de exclusão
+        function removerProdutoDeExclusao(sku) {
+            produtosAExcluir = produtosAExcluir.filter(produto => produto.sku !== sku); // Remove o produto da lista
+            localStorage.setItem('produtosAExcluir', JSON.stringify(produtosAExcluir)); // Atualiza o localStorage
+            atualizarListaExclusao(); // Atualiza a tabela exibida
+        }
+
+        // Função para excluir todos os produtos selecionados da lista
+        function excluirProdutosSelecionados() {
+            const confirmacao = confirm('Tem certeza que deseja excluir todos os produtos selecionados?');
+            if (confirmacao) {
+                let produtos = JSON.parse(localStorage.getItem('produtos')) || [];
+                produtosAExcluir.forEach(produto => {
+                    // Remove o produto do localStorage
+                    produtos = produtos.filter(p => p.sku !== produto.sku);
+                });
+
+                localStorage.setItem('produtos', JSON.stringify(produtos)); // Atualiza o localStorage
+                alert('Produtos excluídos com sucesso!');
+                produtosAExcluir = []; // Limpa a lista de produtos a excluir
+                localStorage.setItem('produtosAExcluir', JSON.stringify(produtosAExcluir)); // Atualiza o localStorage
+                atualizarListaExclusao(); // Atualiza a tabela exibida
+            }
+        }
+
+        // Carregar a lista de exclusão ao carregar a página
+        atualizarListaExclusao();
+    </script>
+
 </body>
 </html>
