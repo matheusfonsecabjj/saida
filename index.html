@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deletar Produtos por SKU</title>
+    <link rel="stylesheet" type="text/css" href="sku.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="logo.css" media="screen" />
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="logo.png" alt="Logo">
+        </div>
+        <div class="menu-toggle" onclick="toggleMenu()">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="menu">
+            <a href="https://matheusfonsecabjj.github.io/home/">Home</a>
+            <a href="https://matheusfonsecabjj.github.io/entrada/">Entrada</a>
+            <a href="https://matheusfonsecabjj.github.io/saida/">Saída</a>
+            <a href="https://matheusfonsecabjj.github.io/lista/">Listagem</a>
+            <a href="https://matheusfonsecabjj.github.io/mapa/">Mapeamento</a>
+            <a href="https://matheusfonsecabjj.github.io/pedidos/">Espelho</a>
+        </div>
+    </nav>
+
+    <div class="filter-container">
+        <label for="skuInput">Digite o SKU para adicionar à lista de exclusão: </label>
+        <input type="text" id="skuInput" placeholder="Digite o SKU" />
+        <button onclick="adicionarProdutoParaExcluir()">Adicionar à Lista</button>
+    </div>
+
+    <h2>Produtos a Serem Excluídos</h2>
+
+    <p id="quantidadeExcluidos">Quantidade de produtos na lista: 0</p>
+
+    <table id="tabelaProdutosExclusao">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Produto</th>
+                <th>Cor</th>
+                <th>Espessura</th>
+                <th>Peso</th>
+                <th>SKU</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody id="produtosExclusao">
+        </tbody>
+    </table>
+
+    <button id="btnExcluirTodos" style="display: none;" onclick="excluirProdutosSelecionados()">Excluir Produtos Selecionados</button>
+</body>
+</html>

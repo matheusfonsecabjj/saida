@@ -1,0 +1,183 @@
+/* Resetando propriedades padrões */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Corpo da página */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+/* Estilos para o título */
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Estilos para o filtro de SKU */
+.filter-container {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.filter-container label {
+    font-weight: bold;
+    margin-right: 10px;
+    align-self: center;
+}
+
+.filter-container input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex: 1;
+    min-width: 200px;
+    max-width: 400px;
+}
+
+.filter-container button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.filter-container button:hover {
+    background-color: #45a049;
+}
+
+/* Exibição da quantidade de produtos */
+#quantidadeExcluidos {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+
+/* Estilos da tabela */
+#tabelaProdutosExclusao {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#tabelaProdutosExclusao th, #tabelaProdutosExclusao td {
+    padding: 12px;
+    border: 1px solid #333;
+    text-align: left;
+    font-size: 1rem; /* Tamanho relativo */
+}
+
+#tabelaProdutosExclusao th {
+    background-color: #d3d3d3;
+    font-weight: bold;
+    text-align: center;
+}
+
+#tabelaProdutosExclusao tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#tabelaProdutosExclusao button {
+    padding: 6px 12px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#tabelaProdutosExclusao button:hover {
+    background-color: #c82333;
+}
+
+/* Botão para excluir todos os produtos */
+#btnExcluirTodos {
+    padding: 10px 20px;
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    display: none; /* Inicialmente escondido */
+    text-align: center;
+}
+
+#btnExcluirTodos:hover {
+    background-color: #c82333;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+    .filter-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .filter-container input, .filter-container button {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 12px; /* Aumentando o padding para áreas de toque mais confortáveis */
+    }
+
+    #tabelaProdutosExclusao th, #tabelaProdutosExclusao td {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    #quantidadeExcluidos {
+        font-size: 16px;
+    }
+}
+
+/* Responsividade para telas muito pequenas */
+@media (max-width: 480px) {
+    .filter-container input {
+        font-size: 14px;
+    }
+
+    #tabelaProdutosExclusao th, #tabelaProdutosExclusao td {
+        font-size: 0.8rem;
+    }
+
+    #btnExcluirTodos {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+
+    /* Ajustando o body para ter menos padding em dispositivos móveis */
+    body {
+        padding: 10px;
+    }
+
+    h2 {
+        font-size: 1.2rem; /* Reduzindo o tamanho do título em telas pequenas */
+    }
+
+    .filter-container label {
+        font-size: 14px; /* Reduzindo o tamanho da fonte nos rótulos */
+    }
+}
